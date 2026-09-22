@@ -1,6 +1,6 @@
 # Traffic Streaming Lakehouse
 
-A small Azure Databricks portfolio project that turns AI-camera JSON batches into confirmed intersection turning movements. It demonstrates a simple medallion flow: Auto Loader ingests raw events into Bronze, Silver validates and quarantines bad records, and Gold confirms complete entry-to-exit journeys.
+An Azure Databricks  project that turns AI-camera JSON batches into confirmed intersection turning movements. It demonstrates a medallion flow: Auto Loader ingests raw events into Bronze, Silver validates and quarantines bad records, and Gold confirms complete entry-to-exit journeys.
 
 ## Architecture
 
