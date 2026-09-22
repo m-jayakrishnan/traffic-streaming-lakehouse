@@ -1,0 +1,245 @@
+{
+  "datasets": [
+    {
+      "name": "61ce6f84",
+      "displayName": "confirmed_total",
+      "queryLines": [
+        "SELECT\n",
+        "  COUNT(*) AS confirmed_movement_count\n",
+        "FROM traffic_project.gold.turning_movements\n",
+        "WHERE movement_status = 'confirmed';"
+      ],
+      "catalog": "traffic_project",
+      "schema": "gold"
+    },
+    {
+      "name": "057ba3ea",
+      "displayName": "movement_summary",
+      "queryLines": [
+        "SELECT\n",
+        "  movement,\n",
+        "  COUNT(*) AS vehicle_count\n",
+        "FROM traffic_project.gold.turning_movements\n",
+        "WHERE movement_status = 'confirmed'\n",
+        "GROUP BY movement\n",
+        "ORDER BY vehicle_count DESC;"
+      ],
+      "catalog": "traffic_project",
+      "schema": "gold"
+    },
+    {
+      "name": "028efe97",
+      "displayName": "movement_details",
+      "queryLines": [
+        "SELECT\n",
+        "  camera_id,\n",
+        "  track_id,\n",
+        "  movement,\n",
+        "  entry_zone,\n",
+        "  exit_zone,\n",
+        "  entry_time,\n",
+        "  exit_time\n",
+        "FROM traffic_project.gold.turning_movements\n",
+        "WHERE movement_status = 'confirmed'\n",
+        "ORDER BY entry_time DESC;"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "ae8c8571",
+      "displayName": "dashboard",
+      "layout": [
+        {
+          "widget": {
+            "name": "ed6d11ea",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "057ba3ea",
+                  "fields": [
+                    {
+                      "name": "movement",
+                      "expression": "`movement`"
+                    },
+                    {
+                      "name": "sum(vehicle_count)",
+                      "expression": "SUM(`vehicle_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": false
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "movement",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(vehicle_count)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "b3a526ba",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "028efe97",
+                  "fields": [
+                    {
+                      "name": "camera_id",
+                      "expression": "`camera_id`"
+                    },
+                    {
+                      "name": "track_id",
+                      "expression": "`track_id`"
+                    },
+                    {
+                      "name": "movement",
+                      "expression": "`movement`"
+                    },
+                    {
+                      "name": "entry_zone",
+                      "expression": "`entry_zone`"
+                    },
+                    {
+                      "name": "exit_zone",
+                      "expression": "`exit_zone`"
+                    },
+                    {
+                      "name": "entry_time",
+                      "expression": "`entry_time`"
+                    },
+                    {
+                      "name": "exit_time",
+                      "expression": "`exit_time`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "camera_id"
+                  },
+                  {
+                    "fieldName": "track_id"
+                  },
+                  {
+                    "fieldName": "movement"
+                  },
+                  {
+                    "fieldName": "entry_zone"
+                  },
+                  {
+                    "fieldName": "exit_zone"
+                  },
+                  {
+                    "fieldName": "entry_time"
+                  },
+                  {
+                    "fieldName": "exit_time"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 2,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "confirmed-turning-movements",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "61ce6f84",
+                  "fields": [
+                    {
+                      "name": "sum(confirmed_movement_count)",
+                      "expression": "SUM(`confirmed_movement_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block;\">`Confirmed Turning Movements`</span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(confirmed_movement_count)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 7,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
