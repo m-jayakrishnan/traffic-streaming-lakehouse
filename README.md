@@ -6,7 +6,7 @@ A small Azure Databricks portfolio project that turns AI-camera JSON batches int
 
 `JSON batches → Bronze (Auto Loader/Delta) → Silver (validated + quarantine) → Gold (confirmed movements) → AI/BI dashboard`
 
-The notebooks are intentionally separate so each layer can be run, inspected, and explained independently.
+Azure Databricks **Lakeflow Jobs** orchestrates the layer notebooks as dependent tasks, so Bronze completes before Silver starts and Gold runs only after Silver succeeds. The notebooks remain separate so each layer can be run, inspected, retried, and explained independently.
 
 ## Event schema
 
@@ -34,7 +34,18 @@ Gold groups by `intersection_id`, `camera_id`, and `track_id`. It emits a moveme
 
 ## Dashboard
 
-`Intersection Turning Movement Dashboard.lvdash.json` is an Azure Databricks AI/BI dashboard definition for exploring confirmed movements by camera, vehicle type, and movement.
+`Intersection Turning Movement Dashboard.lvdash.json` is an Azure Databricks AI/BI dashboard definition for exploring confirmed movements by camera, vehicle type, and movement. A rendered dashboard screenshot is intentionally not committed yet because the exported `.lvdash.json` contains the dashboard definition, not a captured image. Add a real workspace screenshot at `docs/images/turning-movement-dashboard.png` and embed it here before using the repository in a portfolio.
+
+## Orchestration with Lakeflow Jobs
+
+The pipeline is executed as one Lakeflow Job with task dependencies:
+
+1. `bronze_ingestion` runs `01_ingest-autoloader.ipynb` with Auto Loader and `availableNow=True`.
+2. `silver_validation` depends on Bronze and runs `02_Silver_Validation.ipynb`.
+3. `gold_turning_movements` depends on Silver and runs `03_Gold_Turning_Movements.ipynb`.
+4. The AI/BI dashboard reads the Gold Delta table and is refreshed after a successful Gold task.
+
+For the portfolio demo, the job can be started manually after uploading a batch. A file-arrival trigger is optional and requires Azure Storage Queue and Event Grid permissions on the managed identity used by the external location.
 
 ## Repository structure
 
@@ -49,7 +60,7 @@ Gold groups by `intersection_id`, `camera_id`, and `track_id`. It emits a moveme
 
 You need an Azure Databricks workspace with Unity Catalog, a SQL-capable cluster or serverless compute, permission to create the project catalog/schemas/volume, and a volume or cloud path containing the sample JSON files. Edit the clearly marked placeholders in `00_config.ipynb`; no credentials or storage identifiers belong in Git.
 
-Run notebooks in this order: `00_config` → copy sample JSON into the configured landing path → `01_ingest-autoloader` → `02_Silver_Validation` → `03_Gold_Turning_Movements`. Confirm the Bronze/Silver/Quarantine counts before opening the dashboard.
+Run `00_config` once, copy sample JSON into the configured landing path, and then run the Lakeflow Job. Its task dependency order is `01_ingest-autoloader` → `02_Silver_Validation` → `03_Gold_Turning_Movements`. Confirm the Bronze/Silver/Quarantine counts before refreshing the dashboard.
 
 ## Known limitation
 
