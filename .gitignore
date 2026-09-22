@@ -1,0 +1,13 @@
+# Databricks and local runtime state
+.databricks/
+*.checkpoint/
+_checkpoint*/
+schema*/
+.env
+.env.*
+*.pem
+*.key
+__pycache__/
+.DS_Store
+.idea/
+.vscode/
