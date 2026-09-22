@@ -1,0 +1,2 @@
+{"event_id":"e009","batch_id":"batch_002","intersection_id":"int_01","camera_id":"cam_north","track_id":"t600","track_status":"active","event_time":"2026-01-15T08:05:00Z","vehicle_type":"car","detection_confidence":0.95,"roi_zone":"north_entry"}
+{"event_id":"e010","batch_id":"batch_002","intersection_id":"int_01","camera_id":"cam_north","track_id":"t600","track_status":"active","event_time":"2026-01-15T08:05:07Z","vehicle_type":"car","detection_confidence":0.93,"roi_zone":"east_exit"}
